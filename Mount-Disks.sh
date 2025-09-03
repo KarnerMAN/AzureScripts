@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-# Usage: bash Mount-Disks.sh <storageAccountName> <containerName> <storageAccountKey>
-
 STORAGE_ACCOUNT_NAME="$1"
 CONTAINER_NAME="$2"
 STORAGE_ACCOUNT_KEY="$3"
@@ -27,7 +25,7 @@ sudo dpkg -i packages-microsoft-prod.deb
 sudo apt-get update
 sudo apt-get install -y libfuse3-dev fuse3 blobfuse2
 
-# Prepare BlobFuse2 config
+# Config BlobFuse2
 cat <<EOF > /home/$USER/fuse_connection.yaml
 version: 2
 accounts:
