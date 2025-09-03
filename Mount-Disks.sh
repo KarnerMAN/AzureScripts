@@ -1,0 +1,44 @@
+#!/bin/bash
+set -e
+
+# Usage: bash Mount-Disks.sh <storageAccountName> <containerName> <storageAccountKey>
+
+STORAGE_ACCOUNT_NAME="$1"
+CONTAINER_NAME="$2"
+STORAGE_ACCOUNT_KEY="$3"
+
+# Partition, format, and mount /dev/sdc
+sudo parted /dev/sdc --script mklabel gpt mkpart xfspart xfs 0% 100%
+sudo mkfs.xfs /dev/sdc1
+sudo mkdir -p /mnt/sdc
+sudo mount /dev/sdc1 /mnt/sdc
+echo "/dev/sdc1 /mnt/sdc xfs defaults,nofail 1 2" | sudo tee -a /etc/fstab
+
+# Partition, format, and mount /dev/sdd
+sudo parted /dev/sdd --script mklabel gpt mkpart xfspart xfs 0% 100%
+sudo mkfs.xfs /dev/sdd1
+sudo mkdir -p /mnt/sdd
+sudo mount /dev/sdd1 /mnt/sdd
+echo "/dev/sdd1 /mnt/sdd xfs defaults,nofail 1 2" | sudo tee -a /etc/fstab
+
+# Install BlobFuse2 and dependencies
+sudo wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt-get update
+sudo apt-get install -y libfuse3-dev fuse3 blobfuse2
+
+# Prepare BlobFuse2 config
+cat <<EOF > /home/$USER/fuse_connection.yaml
+version: 2
+accounts:
+  - accountName: $STORAGE_ACCOUNT_NAME
+    accountKey: $STORAGE_ACCOUNT_KEY
+    containerName: $CONTAINER_NAME
+EOF
+
+sudo mkdir -p /mnt/blobcontainer
+
+# Mount the blob container
+sudo blobfuse2 mount /mnt/blobcontainer --config-file=/home/$USER/fuse_connection.yaml
+
+echo "Disks and blob storage mounted."
