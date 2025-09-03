@@ -5,14 +5,14 @@ STORAGE_ACCOUNT_NAME="$1"
 CONTAINER_NAME="$2"
 STORAGE_ACCOUNT_KEY="$3"
 
-# Partition, format, and mount /dev/sdc
+# /dev/sdc
 sudo parted /dev/sdc --script mklabel gpt mkpart xfspart xfs 0% 100%
 sudo mkfs.xfs /dev/sdc1
 sudo mkdir -p /mnt/sdc
 sudo mount /dev/sdc1 /mnt/sdc
 echo "/dev/sdc1 /mnt/sdc xfs defaults,nofail 1 2" | sudo tee -a /etc/fstab
 
-# Partition, format, and mount /dev/sdd
+# /dev/sdd
 sudo parted /dev/sdd --script mklabel gpt mkpart xfspart xfs 0% 100%
 sudo mkfs.xfs /dev/sdd1
 sudo mkdir -p /mnt/sdd
@@ -40,3 +40,8 @@ sudo mkdir -p /mnt/blobcontainer
 sudo blobfuse2 mount /mnt/blobcontainer --config-file=/home/$USER/fuse_connection.yaml
 
 echo "Disks and blob storage mounted."
+
+# Generate SSH key pair for the admin user if not present
+if [ ! -f /home/${ADMIN_USERNAME}/.ssh/id_rsa ]; then
+  sudo -u ${ADMIN_USERNAME} ssh-keygen -t rsa -b 4096 -f /home/${ADMIN_USERNAME}/.ssh/id_rsa -N ""
+fi
