@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 STORAGE_ACCOUNT_NAME="$1"
 CONTAINER_NAME="$2"
@@ -37,6 +36,8 @@ accounts:
   - accountName: $STORAGE_ACCOUNT_NAME
     accountKey: $STORAGE_ACCOUNT_KEY
     containerName: $CONTAINER_NAME
+    file_cache:
+      tmp_path: /mnt/blobfusetmp
 EOF
 
 sudo mkdir -p /mnt/blobcontainer
