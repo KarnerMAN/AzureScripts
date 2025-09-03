@@ -8,6 +8,8 @@ ADMIN_USERNAME="$4"
 
 # /dev/sdc
 sudo parted /dev/sdc --script mklabel gpt mkpart xfspart xfs 0% 100%
+sudo partprobe /dev/sdc
+sleep 2
 sudo mkfs.xfs /dev/sdc1
 sudo mkdir -p /mnt/sdc
 sudo mount /dev/sdc1 /mnt/sdc
@@ -15,6 +17,8 @@ echo "/dev/sdc1 /mnt/sdc xfs defaults,nofail 1 2" | sudo tee -a /etc/fstab
 
 # /dev/sdd
 sudo parted /dev/sdd --script mklabel gpt mkpart xfspart xfs 0% 100%
+sudo partprobe /dev/sdd
+sleep 2
 sudo mkfs.xfs /dev/sdd1
 sudo mkdir -p /mnt/sdd
 sudo mount /dev/sdd1 /mnt/sdd
