@@ -4,6 +4,7 @@ set -e
 STORAGE_ACCOUNT_NAME="$1"
 CONTAINER_NAME="$2"
 STORAGE_ACCOUNT_KEY="$3"
+ADMIN_USERNAME="$4" 
 
 # /dev/sdc
 sudo parted /dev/sdc --script mklabel gpt mkpart xfspart xfs 0% 100%
@@ -26,7 +27,7 @@ sudo apt-get update
 sudo apt-get install -y libfuse3-dev fuse3 blobfuse2
 
 # Config BlobFuse2
-cat <<EOF > /home/$USER/fuse_connection.yaml
+cat <<EOF > /home/${ADMIN_USERNAME}/fuse_connection.yaml
 version: 2
 accounts:
   - accountName: $STORAGE_ACCOUNT_NAME
@@ -37,7 +38,7 @@ EOF
 sudo mkdir -p /mnt/blobcontainer
 
 # Mount the blob container
-sudo blobfuse2 mount /mnt/blobcontainer --config-file=/home/$USER/fuse_connection.yaml
+sudo blobfuse2 mount /mnt/blobcontainer --config-file=/home/${ADMIN_USERNAME}/fuse_connection.yaml
 
 echo "Disks and blob storage mounted."
 
