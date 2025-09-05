@@ -62,6 +62,12 @@ echo "Installing prerequisites for WordPress" | tee -a $LOGFILE
 sudo apt-get update 2>&1 | tee -a $LOGFILE
 sudo apt-get install -y apache2 php php-mysql mysql-server libapache2-mod-php wget unzip 2>&1 | tee -a $LOGFILE
 
+# Ensure the correct PHP module is enabled for Apache
+sudo a2enmod php8.3
+
+# Restart Apache to apply changes
+sudo systemctl restart apache2
+
 # Download and extract
 echo "Downloading and installing WordPress" | tee -a $LOGFILE
 cd /tmp
@@ -88,3 +94,4 @@ sudo mysql -e "GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost';"
 sudo mysql -e "FLUSH PRIVILEGES;"
 
 echo "Script completed" | tee -a $LOGFILE
+
