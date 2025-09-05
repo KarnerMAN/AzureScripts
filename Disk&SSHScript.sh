@@ -5,7 +5,7 @@ CONTAINER_NAME="$2"
 STORAGE_ACCOUNT_KEY="$3"
 ADMIN_USERNAME="$4"
 
-LOGFILE="/home/${ADMIN_USERNAME}/script-debug.log"
+LOGFILE="/home/${ADMIN_USERNAME}/DiskSSHScript.log"
 
 echo "Starting disk setup" | tee -a $LOGFILE
 
